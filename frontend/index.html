@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellbeing AI Chatbot</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background-color: #ff7f00;
+        }
+        .left-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .paypal-button-container {
+            margin-left: auto;
+        }
+    </style>
+</head>
+<body>
+    <header class="header-container">
+        <div class="left-buttons">
+            <button id="enter-name-btn">Enter your name</button>
+            <button id="help-btn">Help</button>
+        </div>
+        <select id="language-selection">
+            <option value="en-US">English (US)</option>
+            <option value="hi-IN">Hindi</option>
+            <option value="ko-KR">Korean</option>
+            <option value="cmn-CN">Chinese</option>
+        </select>
+        <div id="paypal-button-container" class="paypal-button-container"></div>
+    </header>
+
+    <div id="chat-container">
+        <div id="message-area"></div>
+        <div id="input-area">
+            <input type="text" id="text-input" placeholder="Type your message here..." autocomplete="off">
+            <button id="send-button">Send</button>
+            <button id="mic-button">TALK</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>Developed by Sandeep Roy</p>
+    </footer>
+
+    <script src="app.js"></script>
+
+    <!-- PayPal SDK -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AVwPaq_689uNFOmhKUBsrTYQHwYS2bIgIO8nE3ed2zDEHA3u1O9yOB8DvCj_iJ4C6ef9pDQnDZvA4XT3&currency=USD"></script>
+
+    <script>
+        paypal.Buttons({
+            style: {
+                layout: 'horizontal',
+                size: 'small',
+                color: 'gold',
+                shape: 'pill',
+                label: 'paypal',
+                tagline: false
+            },
+            createOrder: function(data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            value: '1.00'  // The price of the item (in USD)
+                        }
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(function(details) {
+                    alert('Transaction completed by ' + details.payer.name.given_name);
+                });
+            },
+            onCancel: function (data) {
+                alert('Transaction was cancelled.');
+            },
+            onError: function (err) {
+                console.error('PayPal checkout error:', err);
+                alert('An error occurred during the transaction.');
+            }
+        }).render('#paypal-button-container');  // Render the PayPal button
+    </script>
+</body>
+</html>
